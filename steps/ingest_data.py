@@ -13,7 +13,7 @@ class IngestData :
         """ 
         self.data_path = data_path 
 
-    def get(self) : 
+    def get_data(self) : 
         """
         Ingesting the data from the data_path
         """
@@ -21,7 +21,7 @@ class IngestData :
         return pd.read_csv(self.data_path) 
 
 @step 
-def ingest_data(data_path: str) -> pd.DataFrame: 
+def ingest_df(data_path: str) -> pd.DataFrame: 
     """
     Ingesting the data from the data_path
     Args : 
