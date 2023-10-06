@@ -1,0 +1,1 @@
+zenml init --> initialize the .zen folder 
