@@ -11,3 +11,7 @@ NGROK_TOKEN is saved in the config.py file. to run the `pipeline.ipynb` login to
 """
 NGROK_TOKEN = "your_unique_token"
 ```
+```
+<!-- install mlflow -->
+zenml integration install mlflow -y
+```

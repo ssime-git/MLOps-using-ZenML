@@ -6,10 +6,15 @@ from steps.evaluation import evaluate_model
 
 # enable_cache --> using chached verson of ingest_df. 
 # if nothing changes in the code, or data then it will use the step from the prev run
-@pipeline(enable_cache = True)
+# @pipeline(enable_cache = True)
 def train_pipeline(data_path: str) : 
     df = ingest_df(data_path)
-    clean_df(df)
-    train_model(df)
-    evaluate_model(df)
+    # print('in train_pipeline --> ',type(df))
+    X_train, X_test, y_train, y_test = clean_df(df)
+
+    print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+    print(type(X_train), type(y_train))
+    # print(type(train_model()))
+    model = train_model(X_train, X_test, y_train, y_test)
+    r2_score, rmse = evaluate_model(model, X_test, y_test)
 

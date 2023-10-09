@@ -32,7 +32,9 @@ def ingest_df(data_path: str) -> pd.DataFrame:
     try : 
         ingest_data =  IngestData(data_path)
         df = ingest_data.get_data()
+        logging.info('in ingest_df --> ', type(df))
         return df
+
     except Exception as e:
         logging.error("error while ingesting the data {e}")
         raise e 
