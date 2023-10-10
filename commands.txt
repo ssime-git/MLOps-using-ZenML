@@ -1,2 +1,3 @@
 zenml init --> initialize the .zen folder 
 zenml up --blocking --> after running the run_pipeline.py use this to get the dashboard 
+zenml stack list --> to see the stacks 

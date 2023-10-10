@@ -6,7 +6,7 @@ from typing import Tuple
 from src.evaluation import MSE, RMSE, R2
 from sklearn.base import RegressorMixin
 from typing_extensions import Annotated 
-import mlflow 
+import mlflow  
 from zenml.client import Client 
 
 experiment_tracker = Client().ative_stack.experiment_tracker
