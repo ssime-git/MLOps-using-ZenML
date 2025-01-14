@@ -1,0 +1,15 @@
+[project]
+name = "mlops-using-zenml"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=6.29.5",
+    "mlflow>=2.19.0",
+    "pandas>=2.2.3",
+    "pip>=24.3.1",
+    "pyngrok>=7.2.3",
+    "streamlit>=1.41.1",
+    "zenml[mlflow,server]>=0.72.0",
+]

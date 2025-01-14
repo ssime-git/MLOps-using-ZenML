@@ -11,7 +11,21 @@ NGROK_TOKEN is saved in the config.py file. to run the `pipeline.ipynb` login to
 """
 NGROK_TOKEN = "your_unique_token"
 ```
-```
+
+```sh
 <!-- install mlflow -->
 zenml integration install mlflow -y
+```
+
+# mes notes
+
+## Installation de uv
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv init
+uv venv
+source .venv/bin/activate
+uv add pip "zenml[server]" pyngrok
+zenml integration install sklearn -y
 ```
