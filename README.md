@@ -40,8 +40,11 @@ This project implements an end-to-end MLOps pipeline using ZenML for customer sa
 
 ### 1. ZenML Dashboard
 ```bash
-# Start the ZenML UI server
-zenml up
+# For Mac users, set required environment variable
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+# Start the ZenML UI server (new command)
+zenml login --local
 
 # Access the dashboard at http://127.0.0.1:8237
 # Default credentials:
@@ -133,11 +136,20 @@ zenml stack set mlflow_stack
 ```bash
 # Deploy the model with a specified minimum accuracy threshold
 # Note: The current model achieves ~1.8% accuracy, so we set a low threshold for demonstration
-python run_deployment.py --config deploy --min-accuracy 0.01
-
-# After deployment is successful, you should see a message indicating
-# the model is running at http://127.0.0.1:8000/invocations
+python run_deployment.py --config deploy --min-accuracy 0.01  # Required because current model has ~1.8% accuracy
 ```
+
+Note about Model Deployment:
+- The deployment trigger checks if model accuracy > minimum threshold
+- Default threshold is 92% (`min_accuracy=0.92`)
+- Our current model achieves ~1.8% accuracy (1.8% < 92%)
+- Therefore, we set `--min-accuracy 0.01` so that 1.8% > 0.01%
+- This allows the model to deploy, but in production, you would improve the model instead
+
+Important: Increasing `--min-accuracy` after deployment won't affect the running service. To deploy a better model:
+1. Improve the model's performance (feature engineering, better algorithm)
+2. Stop the current service: `zenml model-deployer models delete <service-uuid>`
+3. Run deployment with higher threshold: `python run_deployment.py --config deploy --min-accuracy 0.90`
 
 2. View MLflow Experiment Results:
 ```bash
@@ -185,6 +197,63 @@ Note: The current model performance is quite low. This is intentional for demons
 - MLflow experiment tracking
 - Model performance monitoring
 - Deployment status tracking
+
+## Stack Persistence
+
+The ZenML stack configuration persists across virtual environment activations. After activating the venv:
+
+1. Check Stack Status:
+```bash
+# View all stacks
+zenml stack list
+
+# View active stack details
+zenml stack describe
+```
+
+2. Verify Components:
+```bash
+# Check integrations
+zenml integration list
+
+# Check model deployers
+zenml model-deployer list
+```
+
+3. Start Required Services:
+```bash
+# Start ZenML UI (if needed)
+zenml login --local
+
+# on MAC
+#export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+#zenml login --local
+
+# Deploy model (if needed)
+python run_deployment.py --config deploy --min-accuracy 0.01  # Required because current model has ~1.8% accuracy
+```
+
+Note about MLflow Deployment Service:
+- The service at `http://127.0.0.1:8000/invocations` does NOT persist
+- You need to redeploy the model after system restarts or new sessions
+- To check if the service is running:
+  ```bash
+  # List running services
+  zenml model-deployer models list
+  
+  # If no service is running, redeploy:
+  python run_deployment.py --config deploy --min-accuracy 0.01
+  ```
+- You can also test the endpoint directly:
+  ```bash
+  # Using curl
+  curl -X POST http://127.0.0.1:8000/invocations
+  
+  # Or using our test script
+  python direct_predict.py
+  ```
+
+The stack configuration remains intact, but services like the MLflow deployment and ZenML UI need to be restarted after system reboots or new terminal sessions.
 
 ## Troubleshooting
 
