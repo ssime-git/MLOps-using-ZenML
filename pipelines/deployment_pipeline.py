@@ -19,7 +19,8 @@ from zenml.integrations.mlflow.model_deployers.mlflow_model_deployer import (
 )
 from zenml.integrations.mlflow.services import MLFlowDeploymentService
 from zenml.integrations.mlflow.steps import mlflow_model_deployer_step
-from zenml.steps import BaseParameters, Output
+from pydantic import BaseModel
+from typing import Tuple, cast
 
 from .utils import get_data_for_test
 
@@ -32,7 +33,7 @@ def dynamic_importer() -> str:
     data = get_data_for_test()
     return data
 
-class DeploymentTriggerConfig(BaseParameters) :
+class DeploymentTriggerConfig(BaseModel) :
     min_accuracy: float = 0.92
 
 @step 
@@ -43,7 +44,7 @@ def deployment_trigger(accuracy: float, config: DeploymentTriggerConfig) :
     """
     return accuracy > config.min_accuracy 
 
-class MLFlowDeploymentLoaderStepParameters(BaseParameters):
+class MLFlowDeploymentLoaderStepParameters(BaseModel):
     """MLflow deployment getter parameters
 
     Attributes:
@@ -69,7 +70,7 @@ def prediction_service_loader(
 
     mlflow_model_deployer_component = MLFlowModelDeployer.get_active_model_deployer()
 
-    existing_services = model_deployer.find_model_server(
+    existing_services = mlflow_model_deployer_component.find_model_server(
         pipeline_name=pipeline_name,
         pipeline_step_name=pipeline_step_name,
         model_name=model_name,
@@ -131,7 +132,10 @@ def continuous_deployment_pipeline(
     X_train, X_test, y_train, y_test = clean_df(df)
     model = train_model(X_train, X_test, y_train, y_test)
     r2_score, rmse = evaluate_model(model, X_test, y_test)
-    deployment_decision = deployment_trigger(r2_score)
+    deployment_decision = deployment_trigger(
+        accuracy=r2_score,
+        config=DeploymentTriggerConfig(min_accuracy=min_accuracy)
+    )
     mlflow_model_deployer_step(
         model = model, 
         deploy_decision = deployment_decision, 
@@ -146,7 +150,7 @@ def inference_pipeline(pipeline_name: str, pipeline_step_name: str):
     service = prediction_service_loader(
         pipeline_name = pipeline_name,
         pipeline_step_name = pipeline_step_name,
-        running = False,
+        running = True,
     )
     prediction = predictor(service = service, data = data)
     return prediction

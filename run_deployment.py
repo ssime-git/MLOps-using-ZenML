@@ -10,7 +10,7 @@ from zenml.integrations.mlflow.mlflow_utils import get_tracking_uri
 from zenml.integrations.mlflow.model_deployers.mlflow_model_deployer import (
     MLFlowModelDeployer
 )
-from .utils import get_data_for_test
+from pipelines.utils import get_data_for_test
 from typing import cast
 from zenml.integrations.mlflow.services import MLFlowDeploymentService
 
@@ -32,8 +32,8 @@ DEPLOY_AND_PREDICT = 'deploy_and_predict'
 
 @click.option(
     "--min-accuracy", 
-    default = 0.92
-    help = "Minimum accuracy required to deploy the model",
+    default=0.92,
+    help="Minimum accuracy required to deploy the model",
 )
 
 def main(config: str, min_accuracy: float) :

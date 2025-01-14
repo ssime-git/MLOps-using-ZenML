@@ -10,9 +10,9 @@ from .config import ModelNameConfig
 import mlflow 
 from zenml.client import Client 
 
-experiment_tracker = Client().ative_stack.experiment_tracker
+experiment_tracker = Client().active_stack.experiment_tracker
 
-@step(experiment_tracker = experiment_tracker.name)
+@step(experiment_tracker = experiment_tracker.name if experiment_tracker else None)
 def train_model(
     X_train : pd.DataFrame,
     X_test : pd.DataFrame,

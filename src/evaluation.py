@@ -29,9 +29,9 @@ class R2(Evaluation) :
     """
     def calculate_score(self, y_true: np.ndarray, y_pred: np.ndarray) : 
         try : 
-            logging.info("calculating MSE")
+            logging.info("calculating R2 Score")
             r2 = r2_score(y_true, y_pred)
-            logging.info(f"r2 score : {r2}")
+            logging.info(f"R2 Score : {r2}")
             return r2 
 
         except Exception as e: 
@@ -44,8 +44,9 @@ class RMSE(Evaluation) :
     """
     def calculate_score(self, y_true: np.ndarray, y_pred: np.ndarray) : 
         try : 
-            logging.info("calculating MSE")
-            rmse = mean_squared_error(y_true, y_pred, squared = False)
+            logging.info("calculating RMSE")
+            mse = mean_squared_error(y_true, y_pred)
+            rmse = np.sqrt(mse)
             logging.info(f"RMSE : {rmse}")
             return rmse 
 
