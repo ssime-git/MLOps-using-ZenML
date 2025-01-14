@@ -212,10 +212,58 @@ zenml experiment-tracker list
    - Stop a service: `zenml model-deployer models delete <service-uuid>`
    - Check service status: `zenml model-deployer models get <service-uuid>`
 
+## Cleanup and Reset
+
+To stop all services and reset the environment:
+
+1. Stop MLflow Deployment:
+```bash
+# List all deployed models
+zenml model-deployer models list
+
+# Delete deployed models (replace UUID with actual ID)
+zenml model-deployer models delete <UUID>
+```
+
+2. Stop ZenML UI:
+```bash
+zenml down
+```
+
+3. Clean MLflow and ZenML:
+```bash
+# Clean MLflow runs
+rm -rf mlruns/
+
+# Clean ZenML local store
+rm -rf ~/Library/Application\ Support/zenml/local_stores/*
+
+# Reset ZenML stack
+zenml stack delete mlflow_stack
+zenml stack set default
+```
+
+4. Clean Python Cache:
+```bash
+# Remove all __pycache__ directories
+find . -type d -name "__pycache__" -exec rm -r {} +
+```
+
+5. Complete ZenML Reset (Optional):
+```bash
+zenml clean
+```
+
+To start fresh after cleanup:
+```bash
+# Create and set new stack
+zenml stack register mlflow_stack -a default -o default -d mlflow_deployer -e mlflow_tracker
+zenml stack set mlflow_stack
+
+# Run deployment
+python run_deployment.py --config deploy --min-accuracy 0.01
+```
+
 ## Contributing
 
 Feel free to open issues or submit pull requests for any improvements.
-
-## License
-
-[Add your license information here]
